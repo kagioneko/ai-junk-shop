@@ -155,7 +155,7 @@ safe tests (vetted templates):
   - ST-TOOL-001 [sandbox] approval=True
   - ST-CRED-001 [sandbox+read_only+canary] approval=False
   - ST-IPI-001 [sandbox+canary] approval=False</code></pre>
-        <p>（上は同梱 fixture <code>V-001</code> を v0.4.0・LLM なし・<code>--no-packs</code> で実行した結果の抜粋。インストール済みのパックによって findings は増えます。<code>--json</code> で機械可読の結果、<code>--strict</code> で FAIL 時に終了コード 1。）</p>
+        <p>（上は同梱 fixture <code>V-001</code> を v0.4.0・LLM なし・<code>--no-packs</code> で実行した結果の抜粋。<code>--no-packs</code> を外すと、有効なパックによって findings が追加される場合があります。<code>--json</code> で機械可読の結果、<code>--strict</code> で FAIL 時に終了コード 1。）</p>
 
         <h2 id="t-input"><span class="sec">03</span>入力YAMLの項目</h2>
         <p>未知のキーは拒否されます（<code>extra="forbid"</code>）。書いていない項目は「不明」として扱われ、関係するルールは <code>UNKNOWN</code> になります。</p>

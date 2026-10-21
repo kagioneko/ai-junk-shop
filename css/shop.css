@@ -261,6 +261,10 @@ img { max-width: 100%; }
   background: var(--pop-yellow); padding: 0 6px; transform: rotate(-3deg);
 }
 .empty { color: var(--muted); padding: 20px; }
+.sr-label {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
 
 /* ---------- 説明書ページ ---------- */
 .manual-head { padding-block: 48px 8px; }

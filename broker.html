@@ -132,7 +132,7 @@ python3 -m venv .venv
             <tr><td><code>AUDIT_LOG_PATH</code></td><td>設定すると全監査イベントを JSONL で追記（ローテート付き）</td></tr>
           </tbody>
         </table></div>
-        <p>本番は systemd で動かし、<code>ExecStartPre</code> が secret store から tmpfs（<code>/run/credential-broker/</code>）に秘密を書き出し、<code>ExecStopPost</code> で消します。ディスクに秘密を残しません。手順はリポジトリの <code>deploy/</code> を参照。</p>
+        <p>本番は systemd で動かし、<code>ExecStartPre</code> が secret store から tmpfs（<code>/run/credential-broker/</code>）に秘密を書き出し、<code>ExecStopPost</code> で消します。秘密ファイルは通常の永続ディスクではなく tmpfs に置く構成です。手順はリポジトリの <code>deploy/</code> を参照。</p>
 
         <h2 id="t-config"><span class="sec">03</span>設定ファイル</h2>
         <p>AI に見えるのは <code>credential_id</code>（下の <code>github_reader</code>）と説明だけ。<code>secret_name</code> は <code>.env</code> 側のキー名で、AI には返りません。</p>
@@ -234,7 +234,7 @@ deploy/mcp-launch.sh              <span class="c"># secret store → 一時フ�
             <li>レート制限は client ごとではなく全体で共通（v0.1 は単一の Broker トークン設計）</li>
           </ul>
         </div>
-        <p>補助として、Claude Code の <code>PreToolUse(Bash)</code> フック <code>deploy/hooks/bash-secret-guard.sh</code> が同梱されています。Broker を通らない任意のコマンドで、トークンをコマンドラインに直書きしたり、取り出した値を表示したりするのを止めます。</p>
+        <p>補助として、Claude Code の <code>PreToolUse(Bash)</code> フック <code>deploy/hooks/bash-secret-guard.sh</code> が同梱されています。登録すると、Broker を通らないコマンドについて、決まった漏洩パターン（Vault からの取得でフィールドを指定しない、トークンをコマンドラインに直書きする、取り出した値を表示する など）を拒否します。すべての漏洩経路を防ぐものではありません。</p>
 
         <h2 id="t-related"><span class="sec">10</span>関連パーツ</h2>
         <div class="related">
