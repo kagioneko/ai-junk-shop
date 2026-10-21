@@ -39,7 +39,7 @@
     <p class="sign-lead reveal d1">
       AIに仕事を任せるとき、<strong>「鍵を渡しすぎない」「危ない組み合わせに気づく」「やったことを記録する」</strong>ための部品と、
       作っているうちに生まれた、ちょっと変なAIのパーツを並べている店です。<br>
-      ぜんぶ無料。むずかしい話は奥の取扱説明書に、まずは店先の一言からどうぞ。
+      並べている品の入手はぜんぶ無料（使うサービスの利用料などは別）。むずかしい話は奥の取扱説明書に、まずは店先の一言からどうぞ。
     </p>
   </section>
 
@@ -72,7 +72,7 @@
         <span class="sticker red">合鍵<br>禁止</span>
         <span class="model">Credential Broker · credential-broker</span>
         <h3>鍵を渡さない管理人</h3>
-        <p class="plain">AIに本物の鍵（APIキー）は渡さない。かわりに5分で消える「入館証」だけ渡して、決めた部屋にしか入れない。</p>
+        <p class="plain">AIに本物の鍵（APIキー）は渡さない。かわりに期限つき（既定5分）の「入館証」だけ渡して、許可した用事しか頼めないようにする。</p>
         <p class="tech">期限付き Credential Handle と Capability だけを渡す Secret Capability Gateway。HTTP と MCP stdio。</p>
         <span class="go">説明書を読む →</span>
       </a>
@@ -80,7 +80,7 @@
         <span class="sticker green">記録<br>係</span>
         <span class="model">CPOS · context-pointer-os / cpos-engine-zero</span>
         <h3>現場監督と記録係</h3>
-        <p class="plain">AIの記憶を整理棚で管理して、作業はぜんぶ帳面に記録。危ない作業は勝手に進めず、人間に回す。</p>
+        <p class="plain">AIの記憶を整理棚で管理。CPOSを通した作業は帳面に記録し、危ない作業はそのまま進めずに人間に回す。</p>
         <p class="tech">Context Pointer によるメモリ管理と、Task Tape・審査ゲート付き実行パイプラインを持つ防御的エージェントランタイム。</p>
         <span class="go">説明書を読む →</span>
       </a>
@@ -100,20 +100,20 @@
       <div class="step">
         <span class="when">道具を使うとき</span>
         <h3>Credential Broker で鍵を預かる</h3>
-        <p>AIは鍵そのものを見ない。期限つきの入館証で、許された操作だけを代わりにやってもらう。</p>
+        <p>AIには鍵そのものを渡さない。期限つきの入館証で、許された操作だけを代わりにやってもらう。</p>
       </div>
       <span class="arrow" aria-hidden="true">→</span>
       <div class="step">
         <span class="when">動いているあいだ</span>
         <h3>CPOS で記録と見張り</h3>
-        <p>やったことを消せない帳面に残し、危ない作業は「人間の確認待ち」の列に並べる。</p>
+        <p>CPOSを通した作業を追記式の帳面に残し（書き換えられたら気づける）、危ない作業は「人間の確認待ち」の列に並べる。</p>
       </div>
     </div>
   </section>
 
   <section id="junk" class="section wrap">
     <div class="shelf-label"><span class="no">BIN 03</span><h2>ジャンク棚：ぜんぶ ¥0</h2></div>
-    <p class="section-lead">実験の途中で生まれたパーツたち。動作保証なし、説明書欠品あり。カードを押すと置き場（GitHub）に行けます。いま <b id="shelf-count">—</b> 点。</p>
+    <p class="section-lead">実験の途中で生まれたパーツたち。動作保証なし、説明書欠品あり。カードを押すと置き場（GitHub）か体験サイトに行けます。いま <b id="shelf-count">—</b> 点。</p>
     <div id="bins" class="bins" role="group" aria-label="カゴで絞り込む"></div>
     <label class="sr-label" for="search" hidden>パーツを探す</label>
     <input id="search" class="search" type="search" placeholder="ことばで探す（例：記憶、猫、MCP）" autocomplete="off">

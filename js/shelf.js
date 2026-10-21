@@ -47,7 +47,7 @@
       plain: "上のツールをエディタ（VS Code）の中で使えるようにした拡張。",
       tech: "AI Red Teaming Engine の VS Code 拡張。リアルタイム脆弱性検出" },
     { r: "ait-firewall", bin: "sec", d: "2026-06",
-      plain: "AIへの乗っ取り指示を、短い暗号のような命令列で防ぐ防火壁。",
+      plain: "AIへの乗っ取り指示への対策を研究する、テープ方式の防御層。",
       tech: "テープ方式のプロンプトインジェクション防御層" },
     { r: "zero-width-subliminal", bin: "sec", d: "2026-05",
       plain: "人の目には見えない文字で、文章に隠しメッセージを埋める実験。AIには見えてしまう。",
@@ -121,7 +121,7 @@
       plain: "感情・考え方のクセ・記憶の部品をひとまとめにした道具箱。",
       tech: "NeuroState / Bias / Cognitive / Memory を一本化した統合 SDK" },
     { r: "neurostate-observatory", bin: "emo", d: "2026-05",
-      plain: "AIの「心の中」の動きを外から観察するための窓。",
+      plain: "AIの周りに設けた、気分などを模した数値の動きを観察する道具。",
       tech: "LLM エージェント周辺の合成認知レイヤーの外部観測" },
     { r: "neurostate-writing-mixer", bin: "emo", d: "2026-05",
       plain: "気分を混ぜ合わせて、文章の雰囲気を作るミキサー。",
@@ -153,7 +153,7 @@
       plain: "AIの気分がそのまま「if文」になる、実験的なプログラミング言語。",
       tech: "NeuroState を制御フローにコンパイルするエージェント指向言語" },
     { r: "ait-next-gen", bin: "lang", d: "2026-06",
-      plain: "文章を使わず、4文字の暗号だけでAIを動かす機械語。",
+      plain: "ふつうの文章のかわりに、4文字の命令パケットでAIを動かす実験的な機械語。",
       tech: "TOA（Tape-Oriented Assembly）: 4文字パケットで LLM を駆動するスタックマシン言語" },
     { r: "ai-instruction-tape", bin: "lang", d: "2026-06",
       plain: "AI同士が短い合図でやりとりするための、指示のテープ。",
@@ -185,7 +185,7 @@
       plain: "猫の電卓。説明書はどこかへいった。",
       tech: "HTML 製（README なし）" },
     { r: "need-this-to-exist", bin: "toy", d: "2026-08", flags: ["nodoc"],
-      plain: "「これ、あってほしい」のメモ置き場。中身は開けてのお楽しみ。",
+      plain: "説明書は見出しだけ。中身は開けてのお楽しみ。",
       tech: "README は見出しのみ" }
   ];
 

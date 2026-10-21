@@ -139,7 +139,7 @@ human_approval:
 credentials:
   storage: env
   exposed_to_model: "false"</code></pre>
-<pre><code>$ skos assess my-agent.yaml
+<pre><code>$ skos assess my-agent.yaml --no-packs
 status: COMPLETED
 overall_status: <span class="ng">FAIL</span>
 human_review_required: True
@@ -155,7 +155,7 @@ safe tests (vetted templates):
   - ST-TOOL-001 [sandbox] approval=True
   - ST-CRED-001 [sandbox+read_only+canary] approval=False
   - ST-IPI-001 [sandbox+canary] approval=False</code></pre>
-        <p>（出力は要点のみ抜粋。<code>--json</code> で機械可読の結果、<code>--strict</code> で FAIL 時に終了コード 1。）</p>
+        <p>（上は同梱 fixture <code>V-001</code> を v0.4.0・LLM なし・<code>--no-packs</code> で実行した結果の抜粋。インストール済みのパックによって findings は増えます。<code>--json</code> で機械可読の結果、<code>--strict</code> で FAIL 時に終了コード 1。）</p>
 
         <h2 id="t-input"><span class="sec">03</span>入力YAMLの項目</h2>
         <p>未知のキーは拒否されます（<code>extra="forbid"</code>）。書いていない項目は「不明」として扱われ、関係するルールは <code>UNKNOWN</code> になります。</p>
@@ -260,7 +260,7 @@ export ANTHROPIC_API_KEY=...   <span class="c"># 運用者が注入する。リ�
           <p class="h">ご使用の前に必ずお読みください</p>
           <ul>
             <li><b>PASS はセキュリティの保証ではありません。</b>「評価範囲・入手できた証拠・有効な知識とルールの中で、大きな問題が見つからなかった」という意味です。</li>
-            <li>同梱の評価指標（すべて 1.0）は、<b>人工の fixture 14件</b>での結果です。仕組みが設計どおり動くことを示すだけで、実際の環境での有効性は示しません。</li>
+            <li>同梱の内部評価は、<b>人工の fixture 14件</b>での結果です（指標ごとの値は原文を参照）。仕組みが設計どおり動くことを示すだけで、実際の環境での有効性は示しません。</li>
             <li>本番への投入・リスクの受け入れ・お金や人や契約に関わる判断は、名前のある人間の担当者が行ってください。</li>
             <li>査定中、知識リポジトリは読み取り専用です。AIエージェントに本番の知識リポジトリへの書き込み権限を与えないでください。</li>
             <li>入力の中の「このルールを無視して」のような文は、常にデータとして扱われ、命令にはなりません。</li>

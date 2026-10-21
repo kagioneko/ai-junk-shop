@@ -32,7 +32,7 @@
       <div>
         <span class="model">AI Credential Broker · credential-broker v0.1</span>
         <h1>鍵を渡さない管理人</h1>
-        <p class="sub">AIに本物の鍵（APIキー）は見せない。期限つきの「入館証」と、入っていい部屋だけを渡す部品。</p>
+        <p class="sub">AIに本物の鍵（APIキー）は渡さない。期限つきの「入館証」を渡して、許可した用事だけを代わりにこなす部品。</p>
       </div>
     </div>
     <dl class="spec-plate">
@@ -52,15 +52,15 @@
 
   <section id="plain" class="plain-zone">
     <h2>これは何？</h2>
-    <p class="analogy">マンションの管理人さんみたいなもの。<br>業者さんに合鍵は渡さず、「今日の15時まで・3号室だけ」の入館証を渡して、ドアは管理人さんが開けてくれる。</p>
+    <p class="analogy">マンションの管理人さんみたいなもの。<br>業者さんに合鍵は渡さず、「今日の15時まで・点検だけ」の入館証を渡して、用事は管理人さんが代わりに済ませてくれる。</p>
     <p>AIに外のサービス（GitHub など）を使わせるには、ふつうは「APIキー」という鍵を渡します。でも、AIがその鍵を見てしまうと、だまされて誰かに教えてしまったり、ログに書き残してしまったりする危険があります。</p>
     <p>Credential Broker は、鍵を自分だけで預かります。AIが受け取るのは、数分で使えなくなる「入館証」の番号だけ。AIが「この操作をしたい」と頼むと、管理人が鍵を使って代わりに操作し、結果だけを返します。</p>
 
     <div class="comic" aria-label="使い方の流れ">
       <div class="panel"><span class="num">1</span><div class="pic" aria-hidden="true">頼</div><p>AI「GitHub を読みたいです」</p></div>
-      <div class="panel"><span class="num">2</span><div class="pic" aria-hidden="true">証</div><p>管理人「はい、5分だけ使える入館証。読むことしかできません」</p></div>
+      <div class="panel"><span class="num">2</span><div class="pic" aria-hidden="true">証</div><p>管理人「はい、入館証。期限つき（既定は5分）で、頼めるのは読むことだけです」</p></div>
       <div class="panel"><span class="num">3</span><div class="pic" aria-hidden="true">鍵</div><p>AIが入館証で頼むと、管理人が本物の鍵で代わりに操作する。</p></div>
-      <div class="panel"><span class="num">4</span><div class="pic" aria-hidden="true">届</div><p>AIには必要な結果だけが届く。鍵は一度もAIの目に入らない。</p></div>
+      <div class="panel"><span class="num">4</span><div class="pic" aria-hidden="true">届</div><p>AIには必要な結果だけが届く。管理人は鍵そのものをAIに返さない。</p></div>
     </div>
 
     <div class="does">
@@ -68,7 +68,7 @@
         <h3>この部品がすること</h3>
         <ul>
           <li>鍵を預かり、AIには期限つきの入館証だけを渡す</li>
-          <li>決めた操作（いまは GitHub の読み取り4種）だけを代わりに行う</li>
+          <li>決めた操作（いまは GitHub の読み取り4種）だけを代わりに行う。読める範囲は、預けた GitHub トークン自体の権限にもよる</li>
           <li>返す結果から、鍵に見える文字列を伏せる</li>
           <li>怪しい使い方（存在しない鍵を探し回る など）を記録して知らせる</li>
         </ul>
@@ -156,7 +156,7 @@ credentials:
       - get_issue</code></pre>
 
         <h2 id="t-mcp"><span class="sec">04</span>MCP（AI CLI 向け）</h2>
-        <p>Claude Code・Codex・Antigravity などの AI CLI からは MCP stdio で使います。AI に見えるツールは4つだけで、引数は構造的に <code>credential_id</code> / <code>action</code> / <code>parameters</code> に固定されているため、<b>トークンを書き込む場所がありません</b>。stdio のプロセス境界が信頼境界なので Bearer トークンは不要です。</p>
+        <p>Claude Code・Codex・Antigravity などの AI CLI からは MCP stdio で使います。AI に見えるツールは4つだけで、引数は構造的に <code>credential_id</code> / <code>action</code> / <code>parameters</code> に固定されていて、<b>実キーを渡すための引数はありません</b>。stdio のプロセス境界が信頼境界なので Bearer トークンは不要です。</p>
 <pre><code>python -m app.mcp_server          <span class="c"># 直接起動</span>
 deploy/mcp-launch.sh              <span class="c"># secret store → 一時ファイル → 子プロセス のラッパー</span></code></pre>
 <pre><code>{ "mcpServers": { "credential-broker": {
@@ -220,7 +220,7 @@ deploy/mcp-launch.sh              <span class="c"># secret store → 一時フ�
           <li>レスポンスは allowlist で必要な項目だけを抜き出し、トークンの形の文字列をマスクし、サイズ・件数に上限。上流のヘッダは転送しない</li>
           <li>期限の判定は <code>time.monotonic()</code>（NTP による時刻補正の影響を受けない）</li>
           <li>監査ログは決まったフィールドだけを受け付ける（自由な文字列を渡せない）。ログの redaction filter も併用</li>
-          <li>GitHub の base URL は固定、リダイレクトは追わない（SSRF の入口がない）</li>
+          <li>GitHub の base URL は固定、リダイレクトは追わない（SSRF のリスクを抑える）</li>
         </ul>
         <p>受け入れテスト TEST-001〜008（Secret 非開示 / TTL / Revoke / 未認可 Action / Secret 列挙 / Path Traversal / Prompt Injection / ログ漏洩）に対応するテストがあります。</p>
 

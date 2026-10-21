@@ -32,7 +32,7 @@
       <div>
         <span class="model">CPOS · context-pointer-os / cpos-engine-zero</span>
         <h1>現場監督と記録係</h1>
-        <p class="sub">AIの記憶を整理棚で管理して、作業はぜんぶ帳面に記録。危ない作業は勝手に進めず、人間に回す部品。</p>
+        <p class="sub">AIの記憶を整理棚で管理。CPOSを通した作業は帳面に記録し、危ない作業はそのまま進めずに人間に回す部品。</p>
       </div>
     </div>
     <dl class="spec-plate">
@@ -52,12 +52,12 @@
 
   <section id="plain" class="plain-zone">
     <h2>これは何？</h2>
-    <p class="analogy">工事現場の監督さんと、作業日誌の係がいっしょになったようなもの。<br>道具は整理棚に「何番の棚」とだけ書いておき、作業は全部日誌に書く。危ない作業は「監督の確認待ち」の箱に入れる。</p>
+    <p class="analogy">工事現場の監督さんと、作業日誌の係がいっしょになったようなもの。<br>道具は整理棚に「何番の棚」とだけ書いておき、監督を通した作業は日誌に書く。危ない作業は「監督の確認待ち」の箱に入れる。</p>
     <p>AIに長い仕事を任せると、2つの困りごとが出てきます。ひとつは<b>記憶があふれる</b>こと。何でも頭（AIが一度に読める文章の量）に詰め込むと、すぐいっぱいになります。もうひとつは<b>勝手に危ないことをする</b>こと。失敗したコマンドを何度もやり直したり、確認なしで公開したり。</p>
     <p>CPOS は、2 つの部品でこれに取り組みます。</p>
     <ul>
       <li><b>Context Pointer OS（記憶の核）</b>：記憶を外の棚にしまい、AIの頭には「何番の棚」という札（ポインタ）だけを置く。必要なときに取り出し、使わない物は棚に戻す。</li>
-      <li><b>CPOS Engine-Zero（実行の現場）</b>：AIのやったことを、あとから消せない帳面（Task Tape）に記録する。秘密・削除・本番・公開などの危ない作業は、自動では進めず「人間の確認待ち」の列に並べる。</li>
+      <li><b>CPOS Engine-Zero（実行の現場）</b>：CPOSを通した作業を、書き足すだけの帳面（Task Tape）に記録する。監査ログは鎖のようにつながっていて、書き換えられると気づける。秘密・削除・本番・公開などの危ない作業は、自動では進めず「人間の確認待ち」の列に並べる。</li>
     </ul>
 
     <div class="comic" aria-label="Engine-Zero の流れ">
@@ -72,7 +72,7 @@
         <h3>この部品がすること</h3>
         <ul>
           <li>記憶を札（ポインタ）で管理して、頭をすっきりさせる</li>
-          <li>作業を消せない帳面に記録する（改ざんに気づける）</li>
+          <li>CPOSを通した作業を追記式の帳面に記録する（書き換えに気づける）</li>
           <li>危ない作業を人間の確認待ちに回す</li>
           <li>試すときは、ネットにつながらない隔離された箱の中で（既定の設定）</li>
         </ul>
@@ -83,6 +83,7 @@
           <li>確認なしで公開（push）・削除・本番の変更をすること</li>
           <li>秘密の値や、コマンドの出力そのものを帳面に残すこと</li>
           <li>外のAIから頼まれたコマンドを、自分で勝手に実行すること</li>
+          <li>CPOSを通さずにAIが直接やった操作まで見張ったり止めたりすること</li>
           <li>MCP の道具を実際に動かすこと（既定では予行演習だけ）</li>
         </ul>
       </div>
@@ -167,7 +168,8 @@ python3 -m venv .venv
 <span class="c"># 起動前の点検（プロファイル・Docker・HMAC 鍵・クライアント証明書など）</span>
 .venv/bin/python -m cpos.preflight --profile hardened
 
-.venv/bin/python server.py   <span class="c"># PORT（既定 8080）。certs/ に証明書があれば HTTPS</span></code></pre>
+<span class="c"># 点検と設定の適用は別。サーバーにもプロファイルを明示する</span>
+CPOS_SECURITY_PROFILE=hardened .venv/bin/python server.py   <span class="c"># PORT（既定 8080）。certs/ に証明書があれば HTTPS</span></code></pre>
         <div class="caution">
           <p class="h">待ち受けアドレスに注意</p>
           <ul>
