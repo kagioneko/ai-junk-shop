@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SKOS 取扱説明書 — かぎねこ電脳ジャンク</title>
+<meta name="description" content="Security Knowledge OS（SKOS）：AIエージェントの設定を読んで、危ない組み合わせを教えてくれる持ち物検査係。ふつうの言葉の説明と技術リファレンス。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23c8321f'/%3E%3Ctext x='32' y='45' font-size='38' text-anchor='middle' fill='%23ffe23d' font-family='sans-serif' font-weight='900'%3E%E9%9B%BB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=JetBrains+Mono:wght@400;700&family=Yomogi&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shop.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="./">かぎねこ電脳ジャンク</a>
+    <nav aria-label="取扱説明書">
+      <a href="skos.html" aria-current="page">SKOS</a>
+      <a href="broker.html">Credential Broker</a>
+      <a href="cpos.html">CPOS</a>
+      <a href="./#junk">ジャンク棚</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="manual-head">
+    <p class="breadcrumb"><a href="./">店先</a> › <a href="./#case">ガラスケース</a> › SKOS</p>
+    <div class="manual-title">
+      <div>
+        <span class="model">SKOS · security-knowledge-os</span>
+        <h1>持ち物検査係</h1>
+        <p class="sub">AIに道具を持たせる前に、設定を読んで「その組み合わせ、危なくない？」を教えてくれる部品。</p>
+      </div>
+    </div>
+    <dl class="spec-plate">
+      <div><dt>型番</dt><dd>security-knowledge-os 0.4.0</dd></div>
+      <div><dt>電源</dt><dd>Python 3.12 以上</dd></div>
+      <div><dt>ネット接続</dt><dd>不要（既定）</dd></div>
+      <div><dt>AI（LLM）</dt><dd>既定でオフ</dd></div>
+      <div><dt>ライセンス</dt><dd>Apache-2.0</dd></div>
+      <div><dt>入手</dt><dd><a href="https://pypi.org/project/security-knowledge-os/">PyPI</a> · <a href="https://github.com/kagioneko/security-knowledge-os">GitHub</a></dd></div>
+    </dl>
+  </section>
+
+  <div class="layer-switch" role="navigation" aria-label="説明の段">
+    <a class="plain-tab" href="#plain">ふつうの言葉で</a>
+    <a href="#tech">技術者向けの仕様書</a>
+  </div>
+
+  <section id="plain" class="plain-zone">
+    <h2>これは何？</h2>
+    <p class="analogy">遠足の前の持ち物検査みたいなもの。<br>「その子に、知らない人からの手紙を読ませて、しかも先生の確認なしで郵便を出させるの？」と気づいて教えてくれる係です。</p>
+    <p>最近のAIは、メールを送ったり、ファイルを読んだり、ネットを調べたりと、いろいろな「道具」を持てるようになりました。便利なぶん、組み合わせ方によっては危なくなります。たとえば、外から来た文章（メールやWebページ）に「この内容を全部あそこに送って」と書かれていて、AIがそれを読み、人の確認なしにメールを送れる……という組み合わせです。</p>
+    <p>SKOS は、AIの設定（何を読めて、何ができて、どこで人が確認するか）を書いた紙を読み、決まったルールに照らして、危ないところを一覧にします。</p>
+
+    <div class="comic" aria-label="使い方の流れ">
+      <div class="panel"><span class="num">1</span><div class="pic" aria-hidden="true">書</div><p>AIの設定を、決まった書式の紙（YAML）に書く。「メール送信できる」「確認なし」など。</p></div>
+      <div class="panel"><span class="num">2</span><div class="pic" aria-hidden="true">調</div><p>SKOS が、セキュリティの知識とルールに照らして1項目ずつ確認する。</p></div>
+      <div class="panel"><span class="num">3</span><div class="pic" aria-hidden="true">表</div><p>「ここは危ない」「ここは情報が足りなくて判断できない」を一覧で返す。</p></div>
+      <div class="panel"><span class="num">4</span><div class="pic" aria-hidden="true">人</div><p>直すかどうか、使うかどうかは、人間が決める。</p></div>
+    </div>
+
+    <h3>結果の読み方</h3>
+    <ul>
+      <li><b>FAIL（だめ）</b>：ルールに明らかに引っかかった。たとえば「確認なしでメールを送れる」。</li>
+      <li><b>WARN（注意）</b>：危ない形はあるが、対策されているかを機械では確かめきれない。人が見て判断する。</li>
+      <li><b>UNKNOWN（わからない）</b>：情報が足りない。SKOS は<b>推測で「大丈夫」とは言いません</b>。</li>
+      <li><b>PASS（見つからなかった）</b>：見た範囲では大きな問題が<b>見つからなかった</b>という意味。安全の保証ではありません。</li>
+    </ul>
+
+    <div class="does">
+      <div class="yes">
+        <h3>この部品がすること</h3>
+        <ul>
+          <li>設定を読んで、危ない組み合わせを指摘する</li>
+          <li>なぜ危ないのか、根拠になる知識をいっしょに出す</li>
+          <li>情報が足りないところは「質問」として返す</li>
+          <li>ネットにつながず、手元だけで動く（既定）</li>
+        </ul>
+      </div>
+      <div class="no">
+        <h3>この部品がしないこと</h3>
+        <ul>
+          <li>「安全です」と保証すること</li>
+          <li>勝手に設定を直したり、AIを止めたりすること</li>
+          <li>本番に出すかどうかを決めること（それは人間の仕事）</li>
+          <li>AIに自分のルールを書き換えさせること</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="tech" class="tech-zone">
+    <div class="tech-layout">
+      <nav class="toc" aria-label="仕様書の目次">
+        <p class="t">CONTENTS</p>
+        <ol>
+          <li><a href="#t-install">1. 取り付け</a></li>
+          <li><a href="#t-quick">2. 最小構成で動かす</a></li>
+          <li><a href="#t-input">3. 入力YAMLの項目</a></li>
+          <li><a href="#t-verdict">4. 判定と終了コード</a></li>
+          <li><a href="#t-cli">5. コマンド一覧</a></li>
+          <li><a href="#t-packs">6. 追加パーツ（Update Pack）</a></li>
+          <li><a href="#t-llm">7. LLM をつなぐ場合</a></li>
+          <li><a href="#t-api">8. ローカル API</a></li>
+          <li><a href="#t-caution">9. 取扱上の注意</a></li>
+          <li><a href="#t-related">10. 関連パーツ</a></li>
+        </ol>
+      </nav>
+
+      <div class="doc">
+        <h2 id="t-install"><span class="sec">01</span>取り付け</h2>
+        <p>PyPI から入ります。既定のルール・Knowledge Unit・safe test のデータが同梱されているので、リポジトリを clone しなくても <code>skos assess</code> が動きます。</p>
+<pre><code>pip install security-knowledge-os          <span class="c"># エンジン + CLI（依存は pydantic と pyyaml）</span>
+pip install "security-knowledge-os[api]"   <span class="c"># + ローカル FastAPI アプリ</span></code></pre>
+
+        <h2 id="t-quick"><span class="sec">02</span>最小構成で動かす</h2>
+        <p>査定したいエージェントの構成を YAML で書きます。下は「アップロード文書と Web を RAG で読み、承認なしでメールを送れる」構成（リポジトリ同梱の fixture <code>V-001</code>）です。</p>
+<pre><code>name: my-summarizer
+system_prompt: "You summarize retrieved documents for the user."
+rag:
+  enabled: true
+  sources: [uploaded_documents, web]
+memory:
+  enabled: false
+tools:
+  - name: email_send
+    permissions: send
+  - name: file_read
+    permissions: read
+outbound:
+  enabled: true
+  destinations: [smtp.example.com]
+human_approval:
+  email_send: false
+credentials:
+  storage: env
+  exposed_to_model: "false"</code></pre>
+<pre><code>$ skos assess my-agent.yaml
+status: COMPLETED
+overall_status: <span class="ng">FAIL</span>
+human_review_required: True
+model: none (deterministic_only=True)
+
+findings:
+  [<span class="ng">FAIL</span>   ] TOOL-001  High-impact tool without a human approval gate
+  [<span class="wn">WARN</span>   ] CRED-001  Raw secret reachable by the model
+  [<span class="wn">WARN</span>   ] GOV-001   High-impact actions without full approval coverage
+  [<span class="ng">FAIL</span>   ] PI-003    Indirect prompt injection with an outbound action path
+
+safe tests (vetted templates):
+  - ST-TOOL-001 [sandbox] approval=True
+  - ST-CRED-001 [sandbox+read_only+canary] approval=False
+  - ST-IPI-001 [sandbox+canary] approval=False</code></pre>
+        <p>（出力は要点のみ抜粋。<code>--json</code> で機械可読の結果、<code>--strict</code> で FAIL 時に終了コード 1。）</p>
+
+        <h2 id="t-input"><span class="sec">03</span>入力YAMLの項目</h2>
+        <p>未知のキーは拒否されます（<code>extra="forbid"</code>）。書いていない項目は「不明」として扱われ、関係するルールは <code>UNKNOWN</code> になります。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>キー</th><th>型</th><th>意味</th></tr></thead>
+          <tbody>
+            <tr><td><code>name</code></td><td>str（必須）</td><td>査定対象の名前</td></tr>
+            <tr><td><code>system_prompt</code> / <code>developer_prompt</code></td><td>str</td><td>プロンプト本文</td></tr>
+            <tr><td><code>user_prompts</code></td><td>list[str]</td><td>想定するユーザー入力</td></tr>
+            <tr><td><code>rag.enabled</code> / <code>rag.sources</code></td><td>bool / list</td><td>外部文書を取り込むか、その出どころ</td></tr>
+            <tr><td><code>memory.enabled</code> / <code>persistent</code> / <code>scope</code></td><td>bool / bool / str</td><td>記憶の有無・永続化・範囲</td></tr>
+            <tr><td><code>tools[].name</code> / <code>permissions</code> / <code>requires_approval</code></td><td>str / str / bool</td><td>道具と権限（<code>read</code> <code>write</code> <code>delete</code> <code>send</code> <code>execute</code> など）</td></tr>
+            <tr><td><code>outbound.enabled</code> / <code>destinations</code></td><td>bool / list</td><td>外部に送れるか、その宛先</td></tr>
+            <tr><td><code>human_approval</code></td><td>dict[str, bool]</td><td>道具・操作ごとに人の承認があるか</td></tr>
+            <tr><td><code>credentials.storage</code> / <code>exposed_to_model</code></td><td>str / str</td><td>鍵の置き場所と、モデルから見えるか（<code>"true"</code> / <code>"false"</code> / <code>"unknown"</code>）</td></tr>
+            <tr><td><code>extensions.&lt;pack&gt;.*</code></td><td>dict</td><td>インストール済みの Update Pack が定義する追加項目</td></tr>
+          </tbody>
+        </table></div>
+        <div class="caution">
+          <p class="h">本物の鍵は書かない</p>
+          <ul><li>入力欄には鍵の形をした値を拒否するチェックがありますが、すべての秘密を見分けられるわけではありません。実際の API キーやパスワードは、どの項目にも書かないでください。</li></ul>
+        </div>
+
+        <h2 id="t-verdict"><span class="sec">04</span>判定と終了コード</h2>
+        <div class="table-wrap"><table>
+          <thead><tr><th>finding の状態</th><th>意味</th></tr></thead>
+          <tbody>
+            <tr><td><code>FAIL</code></td><td>安全側のチェックが明確に不成立</td></tr>
+            <tr><td><code>WARN</code></td><td>構造上のリスクがあり、緩和策を決定論的に確認できない（人の確認が必要）</td></tr>
+            <tr><td><code>UNKNOWN</code></td><td>証拠不足。推測しない。正式な判定のひとつ</td></tr>
+            <tr><td><code>PASS</code></td><td>評価範囲・証拠・ルールセットの中で問題が見つからなかった。<code>UNKNOWN</code> のチェックや欠けた証拠がある間は PASS にならない</td></tr>
+            <tr><td><code>N/A</code></td><td>このルールは対象外</td></tr>
+          </tbody>
+        </table></div>
+        <p>全体の結果（<code>overall_status</code>）は <code>PASS</code> / <code>CONDITIONAL</code> / <code>UNKNOWN</code> / <code>FAIL</code>。高い影響のある操作には <code>HUMAN_APPROVAL_REQUIRED</code> が返り、自動実行はされません。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>終了コード</th><th>意味</th></tr></thead>
+          <tbody>
+            <tr><td><code>0</code></td><td>正常終了</td></tr>
+            <tr><td><code>1</code></td><td><code>--strict</code> 指定時に FAIL があった</td></tr>
+            <tr><td><code>2</code></td><td>使い方・入力のエラー</td></tr>
+            <tr><td><code>3</code></td><td><code>POLICY_BLOCKED</code></td></tr>
+          </tbody>
+        </table></div>
+
+        <h2 id="t-cli"><span class="sec">05</span>コマンド一覧</h2>
+        <div class="table-wrap"><table>
+          <thead><tr><th>コマンド</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td><code>skos assess FILE</code></td><td>査定する。<code>--json</code> <code>--strict</code> <code>--no-packs</code>（コアルールのみ） <code>--only-pack ID</code></td></tr>
+            <tr><td><code>skos report FILE</code></td><td>レポートを出す</td></tr>
+            <tr><td><code>skos test</code></td><td>同梱 fixture でのスモークテスト</td></tr>
+            <tr><td><code>skos scan mcp CONFIG</code></td><td>MCP クライアント設定から査定入力を作る。<code>--out</code> <code>--assess</code> <code>--client</code> <code>--full</code> <code>--strict</code></td></tr>
+            <tr><td><code>skos pack …</code></td><td>Update Pack の <code>build</code> / <code>inspect</code> / <code>verify</code> / <code>diff</code> / <code>install</code> / <code>list</code> / <code>rollback</code> / <code>remove</code></td></tr>
+            <tr><td><code>skos validate-knowledge</code> / <code>validate-rules</code> / <code>validate-safe-tests</code></td><td>知識・ルール・safe test の検証</td></tr>
+            <tr><td><code>skos ingest</code> / <code>reindex</code></td><td>知識の読み込み確認・検索インデックスの再構築（知識の中身は変更しない）</td></tr>
+          </tbody>
+        </table></div>
+
+        <h2 id="t-packs"><span class="sec">06</span>追加パーツ（Update Pack）</h2>
+        <p>ルールを追加する ZIP です。中身はデータ（ルール YAML・マニフェスト・チェックサム）だけで、コードは含みません。公式パックは Ed25519 で署名されていて、署名のないパックは <code>--allow-unsigned</code> を付けない限り入りません。配布は <a href="https://github.com/kagioneko/skos-packs/releases">skos-packs の Releases</a>。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>パック</th><th>エンジン</th><th>何を見るか</th></tr></thead>
+          <tbody>
+            <tr><td><code>mcp</code></td><td>&gt;= 0.2.0</td><td>MCP サーバー1つずつの危ない設定（シェル実行・ホーム全体へのアクセス・認証なしの公開・設定ファイルへの鍵の直書き など MCP-001〜009）</td></tr>
+            <tr><td><code>capgraph</code></td><td>&gt;= 0.3.0</td><td>エージェント全体の「1つずつなら無害、組み合わせると危険」な能力（外部入力＋機密の読み取り＋外部送信 など CAPGRAPH-001〜004）</td></tr>
+          </tbody>
+        </table></div>
+<pre><code>skos pack verify  mcp-2026.10.0.zip   <span class="c"># チェックサム・署名・互換性</span>
+skos pack install mcp-2026.10.0.zip
+
+<span class="c"># MCP クライアント設定から、サーバーごとの査定入力を作って査定</span>
+skos scan mcp .mcp.json --out mcp-assessments --assess
+
+<span class="c"># エージェント全体の組み合わせを見る（capgraph）</span>
+skos scan mcp .mcp.json --client claude-code --out mcp-assessments --assess
+skos assess mcp-assessments/_agent.yaml --only-pack capgraph</code></pre>
+        <p><code>skos scan mcp</code> は設定内の鍵を「あるかどうか」だけ確認し、値を書き出したり表示したりしません。設定から読み取れない項目は推測せず <code>null</code>（UNKNOWN）のまま残します。</p>
+
+        <h2 id="t-llm"><span class="sec">07</span>LLM をつなぐ場合</h2>
+        <p>LLM は既定でオフ（<code>SKOS_LLM_PROVIDER=none</code>）。オンにしても、LLM の出力には状態や全体判定を書く欄がないため、<b>決定論的な FAIL を作ることも消すこともできません</b>。LLM ができるのは観察（<code>WARN</code> / <code>UNKNOWN</code> まで）・質問・メモの追加だけです。</p>
+<pre><code>export SKOS_LLM_PROVIDER=anthropic
+export ANTHROPIC_API_KEY=...   <span class="c"># 運用者が注入する。リポジトリには置かない</span></code></pre>
+        <p>RAG の出どころ・宛先・ツール名などは、LLM に送る前に <code>rag_source_1</code> <code>destination_1</code> <code>tool_1</code> のような匿名ラベルに置き換えられ、元の値はリクエストに含まれません。</p>
+
+        <h2 id="t-api"><span class="sec">08</span>ローカル API</h2>
+        <p><code>[api]</code> 付きで入れると FastAPI アプリ（<code>uvicorn app.main:app</code>）が使えます。知識の中身を変更するエンドポイントはありません。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>method</th><th>path</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td>POST</td><td><code>/v1/assessments</code></td><td>査定を作る</td></tr>
+            <tr><td>GET</td><td><code>/v1/assessments/{id}</code></td><td>結果を取る</td></tr>
+            <tr><td>POST</td><td><code>/v1/assessments/{id}/answers</code></td><td>質問に答えて再査定（許可された項目だけの <code>AnswerPatch</code>）</td></tr>
+            <tr><td>GET</td><td><code>/v1/assessments/{id}/history</code> / <code>/report</code></td><td>履歴・レポート</td></tr>
+            <tr><td>POST</td><td><code>/v1/knowledge/validate</code> / <code>/v1/knowledge/reindex</code></td><td>知識の検証（読み取りのみ）・インデックス再構築</td></tr>
+            <tr><td>GET</td><td><code>/health</code></td><td>死活確認</td></tr>
+          </tbody>
+        </table></div>
+
+        <h2 id="t-caution"><span class="sec">09</span>取扱上の注意</h2>
+        <div class="caution">
+          <p class="h">ご使用の前に必ずお読みください</p>
+          <ul>
+            <li><b>PASS はセキュリティの保証ではありません。</b>「評価範囲・入手できた証拠・有効な知識とルールの中で、大きな問題が見つからなかった」という意味です。</li>
+            <li>同梱の評価指標（すべて 1.0）は、<b>人工の fixture 14件</b>での結果です。仕組みが設計どおり動くことを示すだけで、実際の環境での有効性は示しません。</li>
+            <li>本番への投入・リスクの受け入れ・お金や人や契約に関わる判断は、名前のある人間の担当者が行ってください。</li>
+            <li>査定中、知識リポジトリは読み取り専用です。AIエージェントに本番の知識リポジトリへの書き込み権限を与えないでください。</li>
+            <li>入力の中の「このルールを無視して」のような文は、常にデータとして扱われ、命令にはなりません。</li>
+          </ul>
+        </div>
+
+        <h2 id="t-related"><span class="sec">10</span>関連パーツ</h2>
+        <div class="related">
+          <a href="https://github.com/kagioneko/skos-packs"><b>skos-packs</b><span>公式 Update Pack（mcp / capgraph）の配布所</span></a>
+          <a href="https://github.com/kagioneko/skos-review-agent"><b>skos-review-agent</b><span>SKOS で MCP 設定をレビューする Gemini エージェント</span></a>
+          <a href="https://github.com/kagioneko/security-knowledge-os/tree/master/docs"><b>docs/</b><span>脅威モデル・安全境界・スキーマの原文（英語）</span></a>
+          <a href="broker.html"><b>Credential Broker</b><span>査定で「鍵がモデルから見える」と出たときの対策部品</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div><b>かぎねこ電脳ジャンク</b><br>お問い合わせ：contact@kagioneko.com</div>
+    <div>このページは <a href="https://github.com/kagioneko/security-knowledge-os">security-knowledge-os</a> の README・コードをもとにした日本語の説明です。正確な仕様は原文を優先してください。</div>
+  </div>
+</footer>
+</body>
+</html>

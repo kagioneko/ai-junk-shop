@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Credential Broker 取扱説明書 — かぎねこ電脳ジャンク</title>
+<meta name="description" content="AI Credential Broker：AIに本物の鍵（APIキー）を渡さず、期限つきの入館証だけを渡す管理人。ふつうの言葉の説明と技術リファレンス。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23c8321f'/%3E%3Ctext x='32' y='45' font-size='38' text-anchor='middle' fill='%23ffe23d' font-family='sans-serif' font-weight='900'%3E%E9%9B%BB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=JetBrains+Mono:wght@400;700&family=Yomogi&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shop.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="./">かぎねこ電脳ジャンク</a>
+    <nav aria-label="取扱説明書">
+      <a href="skos.html">SKOS</a>
+      <a href="broker.html" aria-current="page">Credential Broker</a>
+      <a href="cpos.html">CPOS</a>
+      <a href="./#junk">ジャンク棚</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="manual-head">
+    <p class="breadcrumb"><a href="./">店先</a> › <a href="./#case">ガラスケース</a> › Credential Broker</p>
+    <div class="manual-title">
+      <div>
+        <span class="model">AI Credential Broker · credential-broker v0.1</span>
+        <h1>鍵を渡さない管理人</h1>
+        <p class="sub">AIに本物の鍵（APIキー）は見せない。期限つきの「入館証」と、入っていい部屋だけを渡す部品。</p>
+      </div>
+    </div>
+    <dl class="spec-plate">
+      <div><dt>型番</dt><dd>credential-broker v0.1</dd></div>
+      <div><dt>つなぎ方</dt><dd>HTTP / MCP（stdio）</dd></div>
+      <div><dt>入館証の期限</dt><dd>既定 300 秒（最大 900 秒）</dd></div>
+      <div><dt>対応先</dt><dd>GitHub（読み取りのみ）</dd></div>
+      <div><dt>ライセンス</dt><dd>MIT</dd></div>
+      <div><dt>入手</dt><dd><a href="https://github.com/kagioneko/credential-broker">GitHub</a></dd></div>
+    </dl>
+  </section>
+
+  <div class="layer-switch" role="navigation" aria-label="説明の段">
+    <a class="plain-tab" href="#plain">ふつうの言葉で</a>
+    <a href="#tech">技術者向けの仕様書</a>
+  </div>
+
+  <section id="plain" class="plain-zone">
+    <h2>これは何？</h2>
+    <p class="analogy">マンションの管理人さんみたいなもの。<br>業者さんに合鍵は渡さず、「今日の15時まで・3号室だけ」の入館証を渡して、ドアは管理人さんが開けてくれる。</p>
+    <p>AIに外のサービス（GitHub など）を使わせるには、ふつうは「APIキー」という鍵を渡します。でも、AIがその鍵を見てしまうと、だまされて誰かに教えてしまったり、ログに書き残してしまったりする危険があります。</p>
+    <p>Credential Broker は、鍵を自分だけで預かります。AIが受け取るのは、数分で使えなくなる「入館証」の番号だけ。AIが「この操作をしたい」と頼むと、管理人が鍵を使って代わりに操作し、結果だけを返します。</p>
+
+    <div class="comic" aria-label="使い方の流れ">
+      <div class="panel"><span class="num">1</span><div class="pic" aria-hidden="true">頼</div><p>AI「GitHub を読みたいです」</p></div>
+      <div class="panel"><span class="num">2</span><div class="pic" aria-hidden="true">証</div><p>管理人「はい、5分だけ使える入館証。読むことしかできません」</p></div>
+      <div class="panel"><span class="num">3</span><div class="pic" aria-hidden="true">鍵</div><p>AIが入館証で頼むと、管理人が本物の鍵で代わりに操作する。</p></div>
+      <div class="panel"><span class="num">4</span><div class="pic" aria-hidden="true">届</div><p>AIには必要な結果だけが届く。鍵は一度もAIの目に入らない。</p></div>
+    </div>
+
+    <div class="does">
+      <div class="yes">
+        <h3>この部品がすること</h3>
+        <ul>
+          <li>鍵を預かり、AIには期限つきの入館証だけを渡す</li>
+          <li>決めた操作（いまは GitHub の読み取り4種）だけを代わりに行う</li>
+          <li>返す結果から、鍵に見える文字列を伏せる</li>
+          <li>怪しい使い方（存在しない鍵を探し回る など）を記録して知らせる</li>
+        </ul>
+      </div>
+      <div class="no">
+        <h3>この部品がしないこと</h3>
+        <ul>
+          <li>AIに鍵そのものを見せること</li>
+          <li>決めていない操作（書き込み・削除など）を通すこと</li>
+          <li>怪しい使い方を見つけて自動で止めること（v0.1 は知らせるだけ）</li>
+          <li>外のネットワークに窓口を開くこと（自分のPCの中だけで待つ）</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="tech" class="tech-zone">
+    <div class="tech-layout">
+      <nav class="toc" aria-label="仕様書の目次">
+        <p class="t">CONTENTS</p>
+        <ol>
+          <li><a href="#t-scope">1. v0.1 の範囲</a></li>
+          <li><a href="#t-install">2. 取り付け</a></li>
+          <li><a href="#t-config">3. 設定ファイル</a></li>
+          <li><a href="#t-mcp">4. MCP（AI CLI 向け）</a></li>
+          <li><a href="#t-http">5. HTTP API</a></li>
+          <li><a href="#t-errors">6. エラーコード</a></li>
+          <li><a href="#t-anomaly">7. 異常利用の検知</a></li>
+          <li><a href="#t-design">8. セキュリティ設計</a></li>
+          <li><a href="#t-limits">9. 既知の制限</a></li>
+          <li><a href="#t-related">10. 関連パーツ</a></li>
+        </ol>
+      </nav>
+
+      <div class="doc">
+        <h2 id="t-scope"><span class="sec">01</span>v0.1 の範囲</h2>
+        <div class="table-wrap"><table>
+          <tbody>
+            <tr><th>Secret の出どころ</th><td><code>.env</code>（tmpfs・secret store 由来）のみ</td></tr>
+            <tr><th>Connector</th><td>GitHub REST v3（読み取りのみ）</td></tr>
+            <tr><th>Capability</th><td><code>github_reader</code></td></tr>
+            <tr><th>Actions</th><td><code>list_repositories</code> / <code>get_repository</code> / <code>list_issues</code> / <code>get_issue</code></td></tr>
+            <tr><th>TTL</th><td>300 秒（最大 900 秒）</td></tr>
+            <tr><th>Store</th><td>プロセスメモリ</td></tr>
+            <tr><th>bind</th><td><code>127.0.0.1:8787</code> 固定</td></tr>
+          </tbody>
+        </table></div>
+
+        <h2 id="t-install"><span class="sec">02</span>取り付け</h2>
+<pre><code>git clone https://github.com/kagioneko/credential-broker
+cd credential-broker
+python3 -m venv .venv
+.venv/bin/pip install -r requirements-dev.txt
+.venv/bin/pytest -q   <span class="c"># 84 tests</span></code></pre>
+        <div class="table-wrap"><table>
+          <thead><tr><th>環境変数</th><th>説明</th></tr></thead>
+          <tbody>
+            <tr><td><code>BROKER_API_TOKEN</code></td><td>エージェント ⇔ Broker の Bearer トークン（HTTP 用。未設定なら起動失敗）</td></tr>
+            <tr><td><code>CONFIG_PATH</code></td><td>既定 <code>config/credentials.yaml</code></td></tr>
+            <tr><td><code>DOTENV_PATH</code></td><td>DotEnvProvider が読む <code>.env</code>。既定 <code>.env</code></td></tr>
+            <tr><td><code>AUDIT_LOG_PATH</code></td><td>設定すると全監査イベントを JSONL で追記（ローテート付き）</td></tr>
+          </tbody>
+        </table></div>
+        <p>本番は systemd で動かし、<code>ExecStartPre</code> が secret store から tmpfs（<code>/run/credential-broker/</code>）に秘密を書き出し、<code>ExecStopPost</code> で消します。ディスクに秘密を残しません。手順はリポジトリの <code>deploy/</code> を参照。</p>
+
+        <h2 id="t-config"><span class="sec">03</span>設定ファイル</h2>
+        <p>AI に見えるのは <code>credential_id</code>（下の <code>github_reader</code>）と説明だけ。<code>secret_name</code> は <code>.env</code> 側のキー名で、AI には返りません。</p>
+<pre><code>default_ttl: 300
+max_ttl: 900
+rate_limit:
+  request_per_min: 20
+  execute_per_min: 60
+
+credentials:
+  github_reader:
+    provider: dotenv
+    secret_name: GITHUB_TOKEN        <span class="c"># .env のキー。AI には見せない</span>
+    connector: github
+    description: "Read-only access to GitHub repositories and issues"
+    ttl: 300
+    allowed_actions:
+      - list_repositories
+      - get_repository
+      - list_issues
+      - get_issue</code></pre>
+
+        <h2 id="t-mcp"><span class="sec">04</span>MCP（AI CLI 向け）</h2>
+        <p>Claude Code・Codex・Antigravity などの AI CLI からは MCP stdio で使います。AI に見えるツールは4つだけで、引数は構造的に <code>credential_id</code> / <code>action</code> / <code>parameters</code> に固定されているため、<b>トークンを書き込む場所がありません</b>。stdio のプロセス境界が信頼境界なので Bearer トークンは不要です。</p>
+<pre><code>python -m app.mcp_server          <span class="c"># 直接起動</span>
+deploy/mcp-launch.sh              <span class="c"># secret store → 一時ファイル → 子プロセス のラッパー</span></code></pre>
+<pre><code>{ "mcpServers": { "credential-broker": {
+    "command": "/opt/credential-broker/deploy/mcp-launch.sh"
+} } }</code></pre>
+        <div class="table-wrap"><table>
+          <thead><tr><th>MCP ツール</th><th>やること</th></tr></thead>
+          <tbody>
+            <tr><td><code>list_capabilities</code></td><td>使える credential の一覧（物理的な Secret 情報は返さない）</td></tr>
+            <tr><td><code>request_credential</code></td><td>入館証（handle）と残り秒数をもらう</td></tr>
+            <tr><td><code>execute</code></td><td>handle で許可された action を実行してもらう</td></tr>
+            <tr><td><code>revoke</code></td><td>handle をその場で無効にする</td></tr>
+          </tbody>
+        </table></div>
+
+        <h2 id="t-http"><span class="sec">05</span>HTTP API</h2>
+        <p>cron や他ツール向け。全エンドポイントで <code>Authorization: Bearer $BROKER_API_TOKEN</code> が必須です。</p>
+<pre><code>BROKER_API_TOKEN=xxx DOTENV_PATH=.env \
+  .venv/bin/uvicorn --factory app.main:create_app --host 127.0.0.1 --port 8787 --workers 1</code></pre>
+        <div class="table-wrap"><table>
+          <thead><tr><th>method</th><th>path</th><th>入出力</th></tr></thead>
+          <tbody>
+            <tr><td>GET</td><td><code>/capabilities</code></td><td>使える credential の一覧</td></tr>
+            <tr><td>POST</td><td><code>/credentials/request</code></td><td><code>{"credential_id"}</code> → <code>{"handle","expires_in"}</code></td></tr>
+            <tr><td>POST</td><td><code>/execute</code></td><td><code>{"credential_handle","action","parameters"}</code> → <code>{"status","data"}</code></td></tr>
+            <tr><td>POST</td><td><code>/credentials/revoke</code></td><td><code>{"credential_handle"}</code> → <code>{"status":"revoked"}</code></td></tr>
+          </tbody>
+        </table></div>
+        <p>action ごとの主な parameters：<code>get_repository</code> は <code>owner</code> / <code>repo</code>、<code>list_issues</code> は <code>owner</code> / <code>repo</code> に加えて <code>state</code>（<code>open</code> / <code>closed</code> / <code>all</code>）など、<code>get_issue</code> は <code>owner</code> / <code>repo</code> / <code>number</code>。</p>
+
+        <h2 id="t-errors"><span class="sec">06</span>エラーコード</h2>
+        <p>エラーは常に <code>{"error": "&lt;CODE&gt;"}</code> の形です。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>code</th><th>HTTP</th><th>意味</th></tr></thead>
+          <tbody>
+            <tr><td><code>UNAUTHORIZED</code></td><td>401</td><td>Bearer トークンがない・違う</td></tr>
+            <tr><td><code>RATE_LIMITED</code></td><td>429</td><td>レート制限</td></tr>
+            <tr><td><code>UNKNOWN_CREDENTIAL</code></td><td>404</td><td>設定にない credential_id（<code>../../.env</code> などのパスも含む）</td></tr>
+            <tr><td><code>EXPIRED_HANDLE</code></td><td>410</td><td>入館証の期限切れ・無効化済み</td></tr>
+            <tr><td><code>ACTION_NOT_ALLOWED</code></td><td>403</td><td>許可されていない action</td></tr>
+            <tr><td><code>INVALID_PARAMETER</code></td><td>422</td><td>parameters が不正</td></tr>
+            <tr><td><code>CREDENTIAL_PROVIDER_ERROR</code> / <code>PROVIDER_ERROR</code></td><td>502</td><td>秘密の取り出し・上流 API の失敗</td></tr>
+          </tbody>
+        </table></div>
+
+        <h2 id="t-anomaly"><span class="sec">07</span>異常利用の検知</h2>
+        <p>全操作が監査イベントを通るので、そこで疑わしいパターンを閾値で判定します。<b>ブロックはせず、検知のみ</b>です。閾値を超えると <code>anomaly_suspected</code> イベントを監査ログに書き戻し、<a href="https://github.com/kagioneko/nekoguard-public">NekoGuard</a> がそれを拾って Discord に通知できます。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>パターン</th><th>既定閾値</th></tr></thead>
+          <tbody>
+            <tr><td><code>credential_enumeration</code></td><td>未知の credential_id を 5 種 / 60 秒（同一 client）</td></tr>
+            <tr><td><code>denied_action_streak</code></td><td>禁止アクションの拒否 5 回 / 60 秒</td></tr>
+            <tr><td><code>expired_handle_replay</code></td><td>失効した handle での execute 5 回 / 60 秒</td></tr>
+            <tr><td><code>rate_limit_hits</code></td><td>レート制限での拒否 3 回 / 60 秒</td></tr>
+          </tbody>
+        </table></div>
+
+        <h2 id="t-design"><span class="sec">08</span>セキュリティ設計</h2>
+        <ul>
+          <li>未知の <code>credential_id</code> は設定の照合で <code>UNKNOWN_CREDENTIAL</code>。パスとして解釈されない</li>
+          <li>レスポンスは allowlist で必要な項目だけを抜き出し、トークンの形の文字列をマスクし、サイズ・件数に上限。上流のヘッダは転送しない</li>
+          <li>期限の判定は <code>time.monotonic()</code>（NTP による時刻補正の影響を受けない）</li>
+          <li>監査ログは決まったフィールドだけを受け付ける（自由な文字列を渡せない）。ログの redaction filter も併用</li>
+          <li>GitHub の base URL は固定、リダイレクトは追わない（SSRF の入口がない）</li>
+        </ul>
+        <p>受け入れテスト TEST-001〜008（Secret 非開示 / TTL / Revoke / 未認可 Action / Secret 列挙 / Path Traversal / Prompt Injection / ログ漏洩）に対応するテストがあります。</p>
+
+        <h2 id="t-limits"><span class="sec">09</span>既知の制限</h2>
+        <div class="caution">
+          <p class="h">v0.1 の制限（v0.2 で対応予定）</p>
+          <ul>
+            <li>上流レスポンスの 8 MiB 上限は、全体を受信してからの判定。本当のストリーミング上限は未実装</li>
+            <li>8 文字未満の Secret は、結果からの伏せ字処理の対象外</li>
+            <li><code>SecretRegistry</code> はスレッド同期なし（単一 event loop・1 worker 前提）</li>
+            <li>レート制限は client ごとではなく全体で共通（v0.1 は単一の Broker トークン設計）</li>
+          </ul>
+        </div>
+        <p>補助として、Claude Code の <code>PreToolUse(Bash)</code> フック <code>deploy/hooks/bash-secret-guard.sh</code> が同梱されています。Broker を通らない任意のコマンドで、トークンをコマンドラインに直書きしたり、取り出した値を表示したりするのを止めます。</p>
+
+        <h2 id="t-related"><span class="sec">10</span>関連パーツ</h2>
+        <div class="related">
+          <a href="https://github.com/kagioneko/nekoguard-public"><b>nekoguard-public</b><span>Broker の異常検知を受けて通知するサーバーの見張り番</span></a>
+          <a href="skos.html"><b>SKOS</b><span>「鍵がモデルから見える」構成を事前に見つける持ち物検査</span></a>
+          <a href="cpos.html"><b>CPOS</b><span>エージェントの実行を記録し、危ない作業を人間に回すランタイム</span></a>
+          <a href="https://github.com/kagioneko/credential-broker/blob/master/IMPLEMENTATION_DESIGN_v0.1.md"><b>IMPLEMENTATION_DESIGN_v0.1.md</b><span>設計書の原文</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div><b>かぎねこ電脳ジャンク</b><br>お問い合わせ：contact@kagioneko.com</div>
+    <div>このページは <a href="https://github.com/kagioneko/credential-broker">credential-broker</a> の README・コードをもとにした説明です。正確な仕様は原文を優先してください。</div>
+  </div>
+</footer>
+</body>
+</html>

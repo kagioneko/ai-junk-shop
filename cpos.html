@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CPOS 取扱説明書 — かぎねこ電脳ジャンク</title>
+<meta name="description" content="CPOS（Context Pointer OS / CPOS Engine-Zero）：AIの記憶を整理棚で管理し、作業を帳面に記録し、危ない作業を人間に回す現場監督。ふつうの言葉の説明と技術リファレンス。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23c8321f'/%3E%3Ctext x='32' y='45' font-size='38' text-anchor='middle' fill='%23ffe23d' font-family='sans-serif' font-weight='900'%3E%E9%9B%BB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=JetBrains+Mono:wght@400;700&family=Yomogi&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shop.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="./">かぎねこ電脳ジャンク</a>
+    <nav aria-label="取扱説明書">
+      <a href="skos.html">SKOS</a>
+      <a href="broker.html">Credential Broker</a>
+      <a href="cpos.html" aria-current="page">CPOS</a>
+      <a href="./#junk">ジャンク棚</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="manual-head">
+    <p class="breadcrumb"><a href="./">店先</a> › <a href="./#case">ガラスケース</a> › CPOS</p>
+    <div class="manual-title">
+      <div>
+        <span class="model">CPOS · context-pointer-os / cpos-engine-zero</span>
+        <h1>現場監督と記録係</h1>
+        <p class="sub">AIの記憶を整理棚で管理して、作業はぜんぶ帳面に記録。危ない作業は勝手に進めず、人間に回す部品。</p>
+      </div>
+    </div>
+    <dl class="spec-plate">
+      <div><dt>構成</dt><dd>2 点セット（記憶の核 ＋ 実行の現場）</dd></div>
+      <div><dt>型番</dt><dd>Context Pointer OS v0.1 / Engine-Zero v0.1.2</dd></div>
+      <div><dt>電源</dt><dd>Python 3</dd></div>
+      <div><dt>状態</dt><dd>研究デモ ／ 防御的ランタイム</dd></div>
+      <div><dt>ライセンス</dt><dd>MIT</dd></div>
+      <div><dt>入手</dt><dd><a href="https://github.com/kagioneko/context-pointer-os">core</a> · <a href="https://github.com/kagioneko/cpos-engine-zero">engine</a></dd></div>
+    </dl>
+  </section>
+
+  <div class="layer-switch" role="navigation" aria-label="説明の段">
+    <a class="plain-tab" href="#plain">ふつうの言葉で</a>
+    <a href="#tech">技術者向けの仕様書</a>
+  </div>
+
+  <section id="plain" class="plain-zone">
+    <h2>これは何？</h2>
+    <p class="analogy">工事現場の監督さんと、作業日誌の係がいっしょになったようなもの。<br>道具は整理棚に「何番の棚」とだけ書いておき、作業は全部日誌に書く。危ない作業は「監督の確認待ち」の箱に入れる。</p>
+    <p>AIに長い仕事を任せると、2つの困りごとが出てきます。ひとつは<b>記憶があふれる</b>こと。何でも頭（AIが一度に読める文章の量）に詰め込むと、すぐいっぱいになります。もうひとつは<b>勝手に危ないことをする</b>こと。失敗したコマンドを何度もやり直したり、確認なしで公開したり。</p>
+    <p>CPOS は、2 つの部品でこれに取り組みます。</p>
+    <ul>
+      <li><b>Context Pointer OS（記憶の核）</b>：記憶を外の棚にしまい、AIの頭には「何番の棚」という札（ポインタ）だけを置く。必要なときに取り出し、使わない物は棚に戻す。</li>
+      <li><b>CPOS Engine-Zero（実行の現場）</b>：AIのやったことを、あとから消せない帳面（Task Tape）に記録する。秘密・削除・本番・公開などの危ない作業は、自動では進めず「人間の確認待ち」の列に並べる。</li>
+    </ul>
+
+    <div class="comic" aria-label="Engine-Zero の流れ">
+      <div class="panel"><span class="num">1</span><div class="pic" aria-hidden="true">頼</div><p>AI「このファイルを直して、テストを走らせたいです」</p></div>
+      <div class="panel"><span class="num">2</span><div class="pic" aria-hidden="true">記</div><p>CPOS が日誌に記録。中身そのものではなく「大きさ・指紋（ハッシュ）・状態」だけを残す。</p></div>
+      <div class="panel"><span class="num">3</span><div class="pic" aria-hidden="true">待</div><p>危ない作業なら「確認待ち」の箱へ。人間が見てOKを出すまで進まない。</p></div>
+      <div class="panel"><span class="num">4</span><div class="pic" aria-hidden="true">試</div><p>OKが出たら、本物とは切り離した箱の中で試す。失敗したら、やり直し計画を作って人間に返す。</p></div>
+    </div>
+
+    <div class="does">
+      <div class="yes">
+        <h3>この部品がすること</h3>
+        <ul>
+          <li>記憶を札（ポインタ）で管理して、頭をすっきりさせる</li>
+          <li>作業を消せない帳面に記録する（改ざんに気づける）</li>
+          <li>危ない作業を人間の確認待ちに回す</li>
+          <li>試すときは、ネットにつながらない隔離された箱の中で（既定の設定）</li>
+        </ul>
+      </div>
+      <div class="no">
+        <h3>この部品がしないこと</h3>
+        <ul>
+          <li>確認なしで公開（push）・削除・本番の変更をすること</li>
+          <li>秘密の値や、コマンドの出力そのものを帳面に残すこと</li>
+          <li>外のAIから頼まれたコマンドを、自分で勝手に実行すること</li>
+          <li>MCP の道具を実際に動かすこと（既定では予行演習だけ）</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="tech" class="tech-zone">
+    <div class="tech-layout">
+      <nav class="toc" aria-label="仕様書の目次">
+        <p class="t">CONTENTS</p>
+        <ol>
+          <li><a href="#t-two">1. 2 つのリポジトリ</a></li>
+          <li><a href="#t-core">2. Context Pointer OS</a></li>
+          <li><a href="#t-engine">3. Engine-Zero の構成</a></li>
+          <li><a href="#t-run">4. 起動とプリフライト</a></li>
+          <li><a href="#t-profile">5. セキュリティプロファイル</a></li>
+          <li><a href="#t-sandbox">6. サンドボックス</a></li>
+          <li><a href="#t-loop">7. 審査つき実行ループ</a></li>
+          <li><a href="#t-adapter">8. 外部エージェント連携</a></li>
+          <li><a href="#t-caution">9. 取扱上の注意</a></li>
+          <li><a href="#t-related">10. 関連パーツ</a></li>
+        </ol>
+      </nav>
+
+      <div class="doc">
+        <h2 id="t-two"><span class="sec">01</span>2 つのリポジトリ</h2>
+        <div class="table-wrap"><table>
+          <thead><tr><th>リポジトリ</th><th>役割</th><th>状態</th></tr></thead>
+          <tbody>
+            <tr><td><a href="https://github.com/kagioneko/context-pointer-os"><code>context-pointer-os</code></a></td><td>LLM のコンテキストを RAM、外部ストレージを Disk とみなすメモリ管理層。Context Pointer・ページング・分岐・ACL・Watchdog</td><td>v0.1 研究デモ</td></tr>
+            <tr><td><a href="https://github.com/kagioneko/cpos-engine-zero"><code>cpos-engine-zero</code></a></td><td>Context Pointer OS を含む防御的エージェントランタイム。Task Tape・審査ゲート・改ざん検知つき監査・MCP コネクタ審査・サンドボックス</td><td>v0.1.2（GitHub Release）</td></tr>
+          </tbody>
+        </table></div>
+
+        <h2 id="t-core"><span class="sec">02</span>Context Pointer OS</h2>
+        <p>会話履歴をコンテキストに詰め込む代わりに、<b>Context Pointer（<code>#ctx</code>）</b>で情報を mount / swap / 保護する、長文脈エージェント向けの仮想メモリ層です。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>機能</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td>Context Pointers</td><td>記憶への軽い参照。プロンプトをきれいに保ちつつ、Registry から必要時に呼び戻す</td></tr>
+            <tr><td>Cognitive RAM &amp; Paging</td><td>アクティブなポインタだけがプロンプトを占有。上限に達すると未使用のものを要約・swap</td></tr>
+            <tr><td>Speculative Branching</td><td>仮説を隔離した分岐で試し、明示的に COMMIT / ROLLBACK するまで本体の記憶に影響しない</td></tr>
+            <tr><td>Watchdog</td><td>安定度の指標がしきい値を超えると、割り込みでコンテキストをリセット</td></tr>
+            <tr><td>ACL</td><td>ポインタ単位のロールベースのアクセス制御</td></tr>
+          </tbody>
+        </table></div>
+<pre><code>git clone https://github.com/kagioneko/context-pointer-os
+cd context-pointer-os
+export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+python3 src/cpos/demo_core.py</code></pre>
+<pre><code>--- [BOOTLOADER] Starting Runtime Sequence ---
+[BOOT] Step 1: >MEM:LOAD #ctx7 !9  (System State)
+[BOOT] Step 2: >MEM:LOAD #ctx20 !9 (Agent Identity)
+...
+--- [WATCHDOG IRQ] SYSTEM ANOMALY DETECTED ---
+System Status after Watchdog IRQ: Stable (corruption=0.0)</code></pre>
+        <p>命令は 2 種類。4 文字の機械語 <b>AIT</b>（<code>[Domain][ID][Action][Priority]</code>、例 <code>m1l5</code> = Memory ctx1 Load 優先度5）と、人間向けのアセンブリ <b>EAP</b>（例 <code>&gt;MEM:LOAD #ctx1 !5</code>）。</p>
+
+        <h2 id="t-engine"><span class="sec">03</span>Engine-Zero の構成</h2>
+<pre><code>User / Agent Input
+        |
+  Context Router   classify: relationship / task / hybrid / dangerous
+        |
+  +-------------+-------------+---------------+----------------+
+  | Context     | Task Tape   | State/Runtime | Security Gates |
+  | Pointer OS  | append-only | short-lived   | auth / policy  |
+  +-------------+-------------+---------------+----------------+
+        |
+  Review-Gated Execution Pipeline
+        |
+  Persistence Boundary
+    Store:       hashes, sizes, statuses, pointers, audit metadata
+    Never store: secrets, raw stdout/stderr, raw diff, request bodies</code></pre>
+        <p>関係の記憶・タスクの実行履歴・短命なランタイム状態を分けて持ち、層をまたぐ情報は管理されたポインタと審査済みの Task Tape イベントだけで渡します。失敗したコマンドや一時的な状態で長期記憶が汚れないようにするためです。</p>
+
+        <h2 id="t-run"><span class="sec">04</span>起動とプリフライト</h2>
+<pre><code>git clone https://github.com/kagioneko/cpos-engine-zero
+cd cpos-engine-zero
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+
+<span class="c"># 起動前の点検（プロファイル・Docker・HMAC 鍵・クライアント証明書など）</span>
+.venv/bin/python -m cpos.preflight --profile hardened
+
+.venv/bin/python server.py   <span class="c"># PORT（既定 8080）。certs/ に証明書があれば HTTPS</span></code></pre>
+        <div class="caution">
+          <p class="h">待ち受けアドレスに注意</p>
+          <ul>
+            <li><code>server.py</code> は <code>0.0.0.0</code> で待ち受けます（全インターフェイス）。手元で試すときは、ファイアウォールやコンテナでポートを外から届かないようにしてください。</li>
+            <li><code>certs/cert.pem</code> と <code>certs/key.pem</code> がないと HTTP にフォールバックします（ログに警告が出ます）。</li>
+          </ul>
+        </div>
+
+        <h2 id="t-profile"><span class="sec">05</span>セキュリティプロファイル</h2>
+        <p><code>CPOS_SECURITY_PROFILE</code> で姿勢を切り替えます。プロファイルが設定するのは既定値だけで、個別に明示した変数が優先されます。現在の姿勢と検証結果は <code>GET /security-profile</code> で確認できます。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>profile</th><th>意図</th></tr></thead>
+          <tbody>
+            <tr><td><code>dev</code></td><td>自由度が高い。ローカルサンドボックス可、API 認証・レート制限・クライアント証明書は既定オフ</td></tr>
+            <tr><td><code>audit</code></td><td>観察優先。permissive サンドボックス、クライアント証明書は audit モード</td></tr>
+            <tr><td><code>hardened</code></td><td>本番向けの fail-closed。HTTPS・API 認証・HMAC 認証・クライアント証明書・strict サンドボックス・レート制限・承認ゲートが既定オン</td></tr>
+          </tbody>
+        </table></div>
+        <p>このほか、HMAC・Bearer トークン・mTLS フィンガープリント・IP 許可リスト・レート制限のミドルウェアがあります。</p>
+
+        <h2 id="t-sandbox"><span class="sec">06</span>サンドボックス</h2>
+        <p>検証は既定で強化した Docker サンドボックスの中で動きます（<code>CPOS_SANDBOX_MODE</code>）。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>mode</th><th>挙動</th></tr></thead>
+          <tbody>
+            <tr><td><code>strict</code></td><td>Docker 必須。使えなければ fail closed。本番推奨</td></tr>
+            <tr><td><code>permissive</code></td><td>Docker 優先。使えなければローカル実行に落ち、その旨を結果のメタデータに記録</td></tr>
+            <tr><td><code>local-dev</code></td><td>開発専用の明示的なローカル実行（<code>CPOS_ALLOW_LOCAL_DEV_RUN=true</code> が必要）</td></tr>
+          </tbody>
+        </table></div>
+        <p>Docker のフラグ：<code>--read-only</code> <code>--cap-drop ALL</code> <code>--security-opt no-new-privileges</code> <code>--network none</code> <code>--memory</code> / <code>--cpus</code> <code>--pids-limit</code>、<code>/tmp</code> は noexec の tmpfs、プロジェクトは <code>/app</code> に読み取り専用でマウント。上限は <code>CPOS_SANDBOX_MEMORY</code> / <code>CPOS_SANDBOX_CPUS</code> / <code>CPOS_SANDBOX_PIDS_LIMIT</code> で調整します。</p>
+
+        <h2 id="t-loop"><span class="sec">07</span>審査つき実行ループ</h2>
+        <p>危ない段階はすべて審査を通し、失敗は「自動で再実行」ではなく、メタデータだけのやり直し計画になります。</p>
+<pre><code>GitHub PR dry-run
+  -&gt; GitHub diff review
+  -&gt; Sandbox patch plan
+  -&gt; Sandbox execution review
+  -&gt; Isolated sandbox run
+  -&gt; Completed result metadata
+  -&gt; Retry review -&gt; Replan template -&gt; Diff intake checklist
+  -&gt; Auto Fix Candidate -&gt; Diff Review Draft
+  -&gt; Human-supplied GitHub diff review
+  -&gt; Back to sandbox execution</code></pre>
+        <ul>
+          <li>この計画・審査の段階では、branch・commit・push・PR は作られません</li>
+          <li>diff の本文は審査・実行の入力として受け取りますが、Task Tape には保存しません</li>
+          <li>stdout / stderr の本文は保存せず、ハッシュ・サイズ・終了コード・状態フラグだけを残します</li>
+          <li>検証コマンドは許可リスト方式で、シェルのメタ文字は拒否されます</li>
+        </ul>
+        <p>人間の確認待ちは <code>GET /human-escalations</code> にまとまります。承認・却下は、それぞれの審査の持ち主のエンドポイント（例 <code>/sandbox/executions/&lt;task_id&gt;/reject</code>）に戻して行い、承認の窓口を二重に作りません。</p>
+
+        <h2 id="t-adapter"><span class="sec">08</span>外部エージェント連携</h2>
+        <p>別のエージェント（Codex 系など）の横に、防御用のランタイムとして置けます。外部エージェントは「やりたいこと」や「やった結果」をメタデータとして送り、CPOS はそれを記録して、危ないものを確認待ちに回します。<b>外部エージェントのコマンドを CPOS が実行することはありません</b>。</p>
+<pre><code>POST /agent-adapter/intake          <span class="c"># command_request / execution_result などを送る</span>
+GET  /agent-adapter/actions         <span class="c"># 審査待ちの契約</span>
+GET  /agent-adapter/execution-results
+GET  /human-escalations</code></pre>
+        <p>承認は「この契約を確認した」という意味で、「今すぐ実行してよい」ではありません。入門は <a href="https://github.com/kagioneko/cpos-engine-zero/blob/main/docs/EXTERNAL_AGENT_5_MIN_GUIDE.md"><code>docs/EXTERNAL_AGENT_5_MIN_GUIDE.md</code></a>、スキーマは <code>docs/AGENT_ADAPTER_SCHEMA.md</code>、秘密を含まない送信例は <code>examples/payloads/</code>。</p>
+        <p>MCP 対応は意図的に控えめです。コネクタ定義は静的に検査・審査されてから登録され、実行要求は dry-run（メタデータのみ）。<b>実際の MCP ツール実行は既定で無効</b>です。</p>
+
+        <h2 id="t-caution"><span class="sec">09</span>取扱上の注意</h2>
+        <div class="caution">
+          <p class="h">ご使用の前に必ずお読みください</p>
+          <ul>
+            <li>Context Pointer OS は<b>研究デモ</b>です。テストは 54 件中 53 件が通り、1 件（別マシンのパスを決め打ちしたテスト）は失敗します。</li>
+            <li>Engine-Zero のダッシュボードやデモ用エンドポイントは、メタデータ（件数・ハッシュ・状態）だけを見せる作りです。デモの画面に「安全」と出ても、それは審査の状態を示しているだけです。</li>
+            <li>本番に置く前に、リポジトリの <code>SECURITY.md</code> と <code>OSS_RELEASE_CHECKLIST.md</code> を確認してください。</li>
+            <li><code>hardened</code> の検証は多くが助言（advisory）です。fail closed になるのは、個々のゲート自体がそう作られているものだけです。</li>
+          </ul>
+        </div>
+
+        <h2 id="t-related"><span class="sec">10</span>関連パーツ</h2>
+        <div class="related">
+          <a href="https://github.com/kagioneko/metacognitive-agent-runtime"><b>metacognitive-agent-runtime</b><span>分岐思考と危険経路の棄却。4 文字テープで子エージェントを派遣</span></a>
+          <a href="https://github.com/kagioneko/ai-instruction-tape"><b>ai-instruction-tape</b><span>AIT（4 文字命令）のテープ</span></a>
+          <a href="https://github.com/kagioneko/cpos-neko-avatar"><b>cpos-neko-avatar</b><span>エージェントの調子を猫の表情で見せるマスコット</span></a>
+          <a href="broker.html"><b>Credential Broker</b><span>CPOS から HTTP で呼べる、鍵を渡さない管理人</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div><b>かぎねこ電脳ジャンク</b><br>お問い合わせ：contact@kagioneko.com</div>
+    <div>このページは <a href="https://github.com/kagioneko/context-pointer-os">context-pointer-os</a> と <a href="https://github.com/kagioneko/cpos-engine-zero">cpos-engine-zero</a> の README・コードをもとにした説明です。正確な仕様は原文を優先してください。</div>
+  </div>
+</footer>
+</body>
+</html>

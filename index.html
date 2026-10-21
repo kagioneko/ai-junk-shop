@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>かぎねこ電脳ジャンク</title>
+<meta name="description" content="AIを安全に使うための部品と、実験で生まれたAIのパーツを並べたジャンク屋。全部無料・自己責任でどうぞ。">
+<meta property="og:title" content="かぎねこ電脳ジャンク">
+<meta property="og:description" content="AIを安全に使うための部品と、実験で生まれたAIのパーツを並べたジャンク屋。">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23c8321f'/%3E%3Ctext x='32' y='45' font-size='38' text-anchor='middle' fill='%23ffe23d' font-family='sans-serif' font-weight='900'%3E%E9%9B%BB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=JetBrains+Mono:wght@400;700&family=Yomogi&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shop.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="./">かぎねこ電脳ジャンク</a>
+    <nav aria-label="店内案内">
+      <a href="#case">主力パーツ</a>
+      <a href="#assembly">組み立て例</a>
+      <a href="#junk">ジャンク棚</a>
+      <a href="#counter">お問い合わせ</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="sign wrap">
+    <div class="sign-board reveal">
+      <span class="open-neon" aria-hidden="true">OPEN</span>
+      <span class="kicker">AI パーツ・ジャンク・研究品</span>
+      <h1>かぎねこ電脳ジャンク</h1>
+      <span class="en">KAGIONEKO&nbsp;AI&nbsp;JUNK&nbsp;&amp;&nbsp;PARTS</span>
+    </div>
+    <p class="sign-lead reveal d1">
+      AIに仕事を任せるとき、<strong>「鍵を渡しすぎない」「危ない組み合わせに気づく」「やったことを記録する」</strong>ための部品と、
+      作っているうちに生まれた、ちょっと変なAIのパーツを並べている店です。<br>
+      ぜんぶ無料。むずかしい話は奥の取扱説明書に、まずは店先の一言からどうぞ。
+    </p>
+  </section>
+
+  <div class="wrap">
+    <aside class="notice reveal d2" aria-label="店主からの注意書き">
+      <h2>店主より ご来店のみなさまへ</h2>
+      <ul>
+        <li>ここに並んでいるのは、ひとりの研究者がつくった<b>研究・実験用のパーツ</b>です。</li>
+        <li>「安全です」と保証するものではありません。<b>部品が「問題なし」と言っても、それは「見た範囲では見つからなかった」という意味</b>です。</li>
+        <li>大事な判断（本番に出す・お金や人に関わる）は、かならず人間が決めてください。主力パーツはそういう作りになっています。</li>
+        <li>ジャンク棚の品は、説明書が欠けていたり、途中で止まっていたりします。そこも含めてお楽しみください。</li>
+      </ul>
+      <p class="sig">— 店主 かぎねこ</p>
+    </aside>
+  </div>
+
+  <section id="case" class="section wrap">
+    <div class="shelf-label"><span class="no">CASE 01</span><h2>ガラスケース：主力パーツ</h2></div>
+    <p class="section-lead">取扱説明書つき。それぞれ「ふつうの言葉で」と「技術者向け」の2段で説明しています。</p>
+    <div class="case">
+      <a class="item reveal d1" href="skos.html">
+        <span class="sticker">取説<br>あり</span>
+        <span class="model">SKOS · security-knowledge-os</span>
+        <h3>持ち物検査係</h3>
+        <p class="plain">AIに道具を持たせる前に、設定を読んで「その組み合わせ、危なくない？」を教えてくれる。最後に決めるのはあなた。</p>
+        <p class="tech">決定論的ルールエンジンによる AI エージェント構成の一次セキュリティ査定。LLM は既定オフ。PyPI 公開。</p>
+        <span class="go">説明書を読む →</span>
+      </a>
+      <a class="item reveal d2" href="broker.html">
+        <span class="sticker red">合鍵<br>禁止</span>
+        <span class="model">Credential Broker · credential-broker</span>
+        <h3>鍵を渡さない管理人</h3>
+        <p class="plain">AIに本物の鍵（APIキー）は渡さない。かわりに5分で消える「入館証」だけ渡して、決めた部屋にしか入れない。</p>
+        <p class="tech">期限付き Credential Handle と Capability だけを渡す Secret Capability Gateway。HTTP と MCP stdio。</p>
+        <span class="go">説明書を読む →</span>
+      </a>
+      <a class="item reveal d3" href="cpos.html">
+        <span class="sticker green">記録<br>係</span>
+        <span class="model">CPOS · context-pointer-os / cpos-engine-zero</span>
+        <h3>現場監督と記録係</h3>
+        <p class="plain">AIの記憶を整理棚で管理して、作業はぜんぶ帳面に記録。危ない作業は勝手に進めず、人間に回す。</p>
+        <p class="tech">Context Pointer によるメモリ管理と、Task Tape・審査ゲート付き実行パイプラインを持つ防御的エージェントランタイム。</p>
+        <span class="go">説明書を読む →</span>
+      </a>
+    </div>
+  </section>
+
+  <section id="assembly" class="section wrap">
+    <div class="shelf-label"><span class="no">CASE 02</span><h2>組み立て例：AIに仕事を任せるとき</h2></div>
+    <p class="section-lead">3つの主力パーツは、AIに仕事を任せる流れの「別々の場面」を受け持ちます。組み合わせてもいいし、1つだけ使ってもかまいません。</p>
+    <div class="assembly">
+      <div class="step">
+        <span class="when">任せる前に</span>
+        <h3>SKOS で持ち物検査</h3>
+        <p>AIがどんな道具を持ち、どこに送れて、どこで人の確認が入るのかを読んで、危ないところを指摘する。</p>
+      </div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="step">
+        <span class="when">道具を使うとき</span>
+        <h3>Credential Broker で鍵を預かる</h3>
+        <p>AIは鍵そのものを見ない。期限つきの入館証で、許された操作だけを代わりにやってもらう。</p>
+      </div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="step">
+        <span class="when">動いているあいだ</span>
+        <h3>CPOS で記録と見張り</h3>
+        <p>やったことを消せない帳面に残し、危ない作業は「人間の確認待ち」の列に並べる。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="junk" class="section wrap">
+    <div class="shelf-label"><span class="no">BIN 03</span><h2>ジャンク棚：ぜんぶ ¥0</h2></div>
+    <p class="section-lead">実験の途中で生まれたパーツたち。動作保証なし、説明書欠品あり。カードを押すと置き場（GitHub）に行けます。いま <b id="shelf-count">—</b> 点。</p>
+    <div id="bins" class="bins" role="group" aria-label="カゴで絞り込む"></div>
+    <label class="sr-label" for="search" hidden>パーツを探す</label>
+    <input id="search" class="search" type="search" placeholder="ことばで探す（例：記憶、猫、MCP）" autocomplete="off">
+    <div id="shelf" class="shelf" aria-live="polite"></div>
+    <noscript><p class="empty">棚の陳列には JavaScript が必要です。一覧は <a href="https://github.com/kagioneko?tab=repositories">GitHub</a> でも見られます。</p></noscript>
+  </section>
+</main>
+
+<footer id="counter" class="footer">
+  <div class="wrap">
+    <div>
+      <b>かぎねこ電脳ジャンク</b><br>
+      お問い合わせ：contact@kagioneko.com
+    </div>
+    <div>
+      置き場：<a href="https://github.com/kagioneko">github.com/kagioneko</a><br>
+      記事：<a href="https://zenn.dev/emilia_lab">Zenn</a> · <a href="https://note.com/emilia_lab">note</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/shelf.js"></script>
+</body>
+</html>
