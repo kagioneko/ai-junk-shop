@@ -229,7 +229,7 @@ GET  /agent-adapter/actions         <span class="c"># 審査待ちの契約</spa
 GET  /agent-adapter/execution-results
 GET  /human-escalations</code></pre>
         <p>承認は「この契約を確認した」という意味で、「今すぐ実行してよい」ではありません。入門は <a href="https://github.com/kagioneko/cpos-engine-zero/blob/main/docs/EXTERNAL_AGENT_5_MIN_GUIDE.md"><code>docs/EXTERNAL_AGENT_5_MIN_GUIDE.md</code></a>、スキーマは <code>docs/AGENT_ADAPTER_SCHEMA.md</code>、秘密を含まない送信例は <code>examples/payloads/</code>。</p>
-        <p>MCP 対応は意図的に控えめです。コネクタ定義は静的に検査・審査されてから登録され、実行要求は dry-run（メタデータのみ）。<b>実際の MCP ツール実行は既定で無効</b>です。</p>
+        <p>MCP 対応は意図的に控えめです。コネクタ定義は静的に検査・審査されてから登録され（リモートは <code>https://</code> を必須とし、<code>https://user:token@host</code> のように URL に資格情報を埋め込んだ定義は拒否。認証情報は環境変数の秘密ファイルで渡すのが前提）、実行要求は dry-run（メタデータのみ）。<b>実際の MCP ツール実行は既定で無効</b>です。</p>
 
         <h2 id="t-caution"><span class="sec">09</span>取扱上の注意</h2>
         <div class="caution">

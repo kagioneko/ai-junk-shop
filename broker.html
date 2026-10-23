@@ -221,6 +221,7 @@ deploy/mcp-launch.sh              <span class="c"># secret store → 一時フ�
           <li>期限の判定は <code>time.monotonic()</code>（NTP による時刻補正の影響を受けない）</li>
           <li>監査ログは決まったフィールドだけを受け付ける（自由な文字列を渡せない）。ログの redaction filter も併用</li>
           <li>GitHub の base URL は固定、リダイレクトは追わない（SSRF のリスクを抑える）</li>
+          <li>上流 API への接続は TLS 証明書を検証し、環境変数のプロキシ（<code>HTTP(S)_PROXY</code>）や TLS 鍵ログ（<code>SSLKEYLOGFILE</code>）を無視する。実クレデンシャルを載せた通信を途中で横取り・傍受されにくくする設計</li>
         </ul>
         <p>受け入れテスト TEST-001〜008（Secret 非開示 / TTL / Revoke / 未認可 Action / Secret 列挙 / Path Traversal / Prompt Injection / ログ漏洩）に対応するテストがあります。</p>
 
